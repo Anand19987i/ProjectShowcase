@@ -12,7 +12,6 @@ const useGetUserProject = () => {
             try {
                 const res = await axios.post(`${PROJECT_API_END_POINT}/profile/${user?.id}`, {withCredentials : true});
                 if (res.data.success) {
-                    console.log(res.data);
                     dispatch(setUserProjects(res.data.projects));
                 }
             } catch (error) {

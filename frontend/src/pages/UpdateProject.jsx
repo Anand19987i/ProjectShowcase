@@ -1,27 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { PROJECT_API_END_POINT } from "@/utils/constant";
 import { useSelector } from "react-redux";
 import Navbar from "./Navbar";
 import { Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const CreateProject = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [projectGenre, setProjectGenre] = useState("ecommerce"); // New state for genre
-  const [projectType, setProjectType] = useState("frontend");
+const UpdateProject = () => {
+  const { singleProject } = useSelector(store => store.project);
+  const { projectId } = useParams();
+  const { user } = useSelector((store) => store.auth);
+  const navigate = useNavigate();
+  const [title, setTitle] = useState(singleProject?.title || "");
+  const [description, setDescription] = useState(singleProject?.description || "");
+  const [projectGenre, setProjectGenre] = useState(singleProject?.projectGenre || "ecommerce");
+  const [projectType, setProjectType] = useState(singleProject?.projectType || "frontend");
   const [frontendFile, setFrontendFile] = useState(null);
   const [backendFile, setBackendFile] = useState(null);
-  const [thumbnails, setThumbnails] = useState([]); // Updated to handle multiple images
+  const [thumbnails, setThumbnails] = useState(singleProject?.thumbnails || []); 
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [error, setError] = useState(null);
 
-  const genreOptions = ["Ecommerce", "Dashboard", "Web Application", "Mobile Application", "Portfolio", "Blog", "Social Media", "AI/ML", "Cloud Computing"]; // Genre options
+  const genreOptions = ["Ecommerce", "Dashboard", "Portfolio", "Blog","Web Application", "Mobile Application", "AI/ML", "CLoud Computing", "Social Media"];
 
-  const { user } = useSelector((store) => store.auth);
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (singleProject?.frontendFile) {
+      setFrontendFile(singleProject.frontendFile);
+    }
+    if (singleProject?.backendFile) {
+      setBackendFile(singleProject.backendFile);
+    }
+  }, [singleProject]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,21 +39,16 @@ const CreateProject = () => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("projectGenre", projectGenre); // Include genre in form data
+    formData.append("projectGenre", projectGenre);
     formData.append("projectType", projectType);
-    formData.append("userId", user?.id); // Add userId here
+    formData.append("userId", user?.id);
 
     if (frontendFile) formData.append("frontendFile", frontendFile);
     if (backendFile) formData.append("backendFile", backendFile);
     if (thumbnails.length > 0) {
       thumbnails.forEach((file) => {
-        formData.append("thumbnail", file); // Add each thumbnail
+        formData.append("thumbnail", file);
       });
-    }
-
-    // Log formData to ensure it's populated correctly
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ": " + pair[1]);
     }
 
     try {
@@ -51,8 +56,8 @@ const CreateProject = () => {
       setSuccessMessage(null);
       setError(null);
 
-      const response = await axios.post(
-        `${PROJECT_API_END_POINT}/upload/project`,
+      const response = await axios.put(
+        `${PROJECT_API_END_POINT}/update/project/${projectId}`,
         formData,
         {
           headers: {
@@ -62,10 +67,9 @@ const CreateProject = () => {
         }
       );
 
-      setSuccessMessage("Project created successfully!");
-      navigate("/");
+      setSuccessMessage("Project updated successfully!");
+      navigate(`/profile/${user.id}`);
 
-      // Reset the form fields after successful submission
       setTitle("");
       setDescription("");
       setProjectGenre("ecommerce");
@@ -74,15 +78,15 @@ const CreateProject = () => {
       setBackendFile(null);
       setThumbnails([]);
     } catch (err) {
-      setError("Failed to create project. Please try again.");
+      setError("Failed to update project. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleThumbnailChange = (e) => {
-    const files = Array.from(e.target.files); // Convert FileList to an array
-    setThumbnails(files); // Update the thumbnails state
+    const files = Array.from(e.target.files); 
+    setThumbnails(files);
   };
 
   return (
@@ -90,7 +94,7 @@ const CreateProject = () => {
       <Navbar />
       <div className="p-6 max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">
-          Upload your Project on <span className="text-pink-600">Dribbble</span>
+          Update your Project on <span className="text-pink-600">Dribbble</span>
         </h2>
 
         {successMessage && (
@@ -182,7 +186,7 @@ const CreateProject = () => {
               onChange={handleThumbnailChange}
               className="w-full"
               accept="image/*"
-              multiple // Allow multiple files
+              multiple
             />
           </div>
           <button
@@ -190,7 +194,7 @@ const CreateProject = () => {
             disabled={loading}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? <Loader2 className="animate-spin" /> : "Create Project"}
+            {loading ? <Loader2 className="animate-spin" /> : "Update Project"}
           </button>
         </form>
       </div>
@@ -198,4 +202,4 @@ const CreateProject = () => {
   );
 };
 
-export default CreateProject;
+export default UpdateProject;

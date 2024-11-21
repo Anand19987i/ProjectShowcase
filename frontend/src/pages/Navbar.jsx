@@ -6,16 +6,18 @@ import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { FiMenu } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const logoutHandler = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('auth_token');
+    navigate("/login");
     dispatch(logoutUser());
   };
 
@@ -50,7 +52,6 @@ const Navbar = () => {
           <li className="text-md cursor-pointer hover:text-rose-400">About</li>
           <li className="text-md cursor-pointer hover:text-rose-400">Blog</li>
           <li className="text-md cursor-pointer hover:text-rose-400">Contact</li>
-          {/* If user is logged in, show View Profile and Logout */}
           {user && (
             <>
               <li>

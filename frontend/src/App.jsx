@@ -8,6 +8,8 @@ import ViewProfile from './pages/ViewProfile';
 import CreateProject from './pages/CreateProject';
 import ProjectDetail from './pages/ProjectDetail';
 import SearchProjects from './pages/SearchProjects';
+import UpdateProject from './pages/UpdateProject';
+import UserProfile from './pages/UserProfile';
 
 const App = () => {
   const appRouter = createBrowserRouter(
@@ -25,7 +27,7 @@ const App = () => {
         element: <Home />,
       },
       {
-        path: '/profile/:id',
+        path: '/profile/:userId',
         element: <ViewProfile />,
       },
       {
@@ -39,6 +41,14 @@ const App = () => {
       {
         path: '/projects/search',
         element: <SearchProjects />
+      },
+      {
+        path: '/update/project/:projectId',
+        element: <UpdateProject/>
+      },
+      {
+        path: '/q/profile/:userId',
+        element: <UserProfile />
       }
     ],
     {

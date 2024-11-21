@@ -12,9 +12,7 @@ const useGetAllProjects = () => {
             try {
                 const res = await axios.get(`${PROJECT_API_END_POINT}/projects`, {withCredentials: true});
                 if (res.data.success) {
-                    console.log(res.data); // Log API respon
                     dispatch(setProjects(res.data.projects));
-                    console.log(res.data); // Log API respon
                 }
             } catch (error) {
                 console.log(error);

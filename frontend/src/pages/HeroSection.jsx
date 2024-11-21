@@ -28,12 +28,12 @@ const HeroSection = () => {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="flex-grow px-5 outline-none rounded-full h-full hover:bg-gray-50 bg-gray-200"
+          className="flex-grow px-5 outline-none rounded-l-full h-full hover:bg-gray-50 bg-gray-200"
           placeholder="What you are looking for?"
         />
         <button
           onClick={handleSearch}
-          className="px-3 bg-pink-600 h-full rounded-r-full text-white"
+          className="p-4 text-center bg-pink-600 hover:bg-pink-700 h-full rounded-r-full text-white"
         >
           <SearchIcon />
         </button>

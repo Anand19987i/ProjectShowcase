@@ -10,13 +10,11 @@ const ViewProject = () => {
 
   const { projects } = useSelector(store => store.project);
 
-  console.log("Projects in Redux store:", projects); // Log to check the Redux state
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   return (
-      <div className="flex flex-wrap gap-4  p-5">
+      <div className="flex justify-center items-center flex-wrap gap-7 p-5">
         {/* Display message when no projects are available */}
         {projects.length <= 0 ? (
           <p className="text-xl font-medium text-center w-full">No projects available</p>

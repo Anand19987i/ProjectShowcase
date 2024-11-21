@@ -30,10 +30,11 @@ const ViewProfile = () => {
           <div className="mx-4 flex flex-col">
             <h1 className="text-2xl sm:text-3xl font-bold">{user?.name}</h1>
             <p className="text-base sm:text-lg font-normal">{user?.email}</p>
-            <div className="flex flex-col sm:flex-row gap-5 mt-6 sm:mt-0">
+          
+            <div className="flex sm:flex-row flex-col gap-5 pt-4 sm:mt-0">
               <button
                 onClick={() => setOpen(true)}
-                className="text-sm sm:text-base outline-none border border-gray-200 p-2 sm:px-3 rounded-lg font-semibold flex gap-2"
+                className="text-sm sm:text-base outline-none border border-gray-200 p-2 w-32 sm:w-40  sm:px-3 rounded-lg font-semibold flex gap-2 mt-3 sm:mt-0"
               >
                 <Edit /> Edit Profile
               </button>

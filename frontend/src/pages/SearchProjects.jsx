@@ -33,15 +33,19 @@ const SearchProjects = () => {
       setLoading(false);
     }
   };
-
+  const Spinner = () => (
+    <div className="w-5 h-5 border border-t-transparent border-pink-500 border-solid rounded-full animate-spin my-60"></div>
+  );
   return (
     <>
     <Navbar/>
     <div className="p-6  mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Search Results for {searchQuery}</h2>
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      <div>
+      <h2 className="text-2xl font-bold mb-4">Search Results for <span className="text-pink-600">{searchQuery}</span></h2>
+      {loading && <div className="flex justify-center items-center">
+        <Spinner />
+      </div>}
+      {/* {error && <p className="text-red-600">{error}</p>} */}
+      <div className="flex flex-wrap">
         {projects.length > 0 ? (
           projects.map((project) => (
             <ProjectCard key={project._id} project={project} />
