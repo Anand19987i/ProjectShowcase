@@ -1,8 +1,11 @@
 import { Project } from "../models/project.model.js";
-import { User } from "../models/user.model.js";
 import cloudinary from "../config/cloudinary.js";
 import getDataUri from "../config/datauri.js";
-import AdmZip from 'adm-zip'; // Import adm-zip
+import path from 'path';
+import fs from 'fs';
+import AdmZip from 'adm-zip';
+import unzipper from "unzipper"
+import { User } from "../models/user.model.js";
 
 export const createProject = async (req, res) => {
   try {
@@ -13,15 +16,34 @@ export const createProject = async (req, res) => {
     }
 
     const uploads = {};
+    const userFolder = path.join("uploads", userId);
 
-    // Handle frontendFile (check if it's a zip and unzip it if necessary)
+    // Create folder if it doesn't exist
+    if (!fs.existsSync(userFolder)) {
+      fs.mkdirSync(userFolder, { recursive: true });
+    }
+
+    // Process frontend file
     if (req.files?.frontendFile) {
       const frontendFile = req.files.frontendFile[0];
-      if (frontendFile.mimetype === 'application/zip') {
-        const zip = new AdmZip(frontendFile.tempFilePath);  // Read the zip file
-        const extractedPath = `uploads/${userId}/frontend/`;  // Destination path for extracted files
-        zip.extractAllTo(extractedPath, true);  // Extract the zip file
-        uploads.frontendFile = extractedPath;  // Set the extracted folder path to upload object
+      const frontendFilePath = path.join(userFolder, frontendFile.originalname);
+
+      if (frontendFile.mimetype === "application/zip" || frontendFile.mimetype === "application/x-zip-compressed") {
+        // Save the ZIP file directly to userFolder
+        fs.writeFileSync(frontendFilePath, frontendFile.buffer);
+        uploads.frontendFile = `/uploads/${userId}/${frontendFile.originalname}`;
+
+        // Unzip the file into a subfolder within userFolder
+        const frontendUnzipFolder = path.join(userFolder);
+        if (!fs.existsSync(frontendUnzipFolder)) {
+          fs.mkdirSync(frontendUnzipFolder);
+        }
+
+        // Unzip file using unzipper
+        await fs.createReadStream(frontendFilePath)
+          .pipe(unzipper.Extract({ path: frontendUnzipFolder }))
+          .promise();
+        console.log(`Frontend files unzipped to ${frontendUnzipFolder}`);
       } else {
         const frontendFileUri = getDataUri(frontendFile);
         const frontendFileUpload = await cloudinary.uploader.upload(frontendFileUri, {
@@ -31,24 +53,48 @@ export const createProject = async (req, res) => {
       }
     }
 
+    // Process backend file
     if (req.files?.backendFile) {
-      const backendFileUri = getDataUri(req.files.backendFile[0]);
-      const backendFileUpload = await cloudinary.uploader.upload(backendFileUri, {
-        resource_type: "raw",
-      });
-      uploads.backendFile = backendFileUpload.secure_url;
+      const backendFile = req.files.backendFile[0];
+      const backendFilePath = path.join(userFolder, backendFile.originalname);
+
+      if (backendFile.mimetype === "application/zip" || backendFile.mimetype === "application/x-zip-compressed") {
+        // Save the ZIP file directly to userFolder
+        fs.writeFileSync(backendFilePath, backendFile.buffer);
+        uploads.backendFile = `/uploads/${userId}/${backendFile.originalname}`;
+
+        // Unzip the file into a subfolder within userFolder
+        const backendUnzipFolder = path.join(userFolder, "backend");
+        if (!fs.existsSync(backendUnzipFolder)) {
+          fs.mkdirSync(backendUnzipFolder);
+        }
+
+        // Unzip file using unzipper
+        await fs.createReadStream(backendFilePath)
+          .pipe(unzipper.Extract({ path: backendUnzipFolder }))
+          .promise();
+        console.log(`Backend files unzipped to ${backendUnzipFolder}`);
+      } else {
+        fs.writeFileSync(backendFilePath, backendFile.buffer);
+        uploads.backendFile = `/uploads/${userId}/${backendFile.originalname}`;
+      }
     }
 
+    // Process thumbnails (unchanged logic)
     if (req.files?.thumbnail) {
       uploads.thumbnails = [];
       for (let i = 0; i < req.files.thumbnail.length; i++) {
-        const thumbnailUri = getDataUri(req.files.thumbnail[i]);
+        const thumbnail = req.files.thumbnail[i];
+        const thumbnailUri = getDataUri(thumbnail);
         const thumbnailUpload = await cloudinary.uploader.upload(thumbnailUri, {
           resource_type: "image",
         });
         uploads.thumbnails.push(thumbnailUpload.secure_url);
       }
     }
+
+    console.log("Request Files:", req.files);
+    console.log("Request Body:", req.body);
 
     const project = new Project({
       title,
