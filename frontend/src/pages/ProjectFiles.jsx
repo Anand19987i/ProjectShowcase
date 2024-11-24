@@ -103,8 +103,8 @@ const FolderViewer = ({ files }) => {
           </React.Fragment>
         );
       }
-
-      const fileUrl = `https://dribble-w20s.onrender.com/uploads/${userId}${fullPath.replace(/\/+/g, '/')}`;
+      const projectId = singleProject.projectId;
+      const fileUrl = `http://localhost:3000/uploads/${userId}/${projectId}/${fullPath.replace(/\/+/g, '/')}`;
 
       return (
         <tr key={uniqueKey}>
@@ -211,11 +211,12 @@ const ProjectFiles = ({ userId }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+  const {singleProject} = useSelector(store => store.project);
+  const projectId = singleProject.projectId;
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axios.get(`${PROJECT_API_END_POINT}/${userId}/files`, { withCredentials: true });
+        const response = await axios.get(`${PROJECT_API_END_POINT}/${userId}/${projectId}/files`, { withCredentials: true });
         if (response.data.files) {
           setFiles(response.data.files);
         } else {

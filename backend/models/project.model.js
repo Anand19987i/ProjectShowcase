@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import {v4 as uuidv4} from "uuid"
 const projectSchema = new mongoose.Schema(
   {
     user: {
@@ -7,9 +7,10 @@ const projectSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    projectId: { type: String, default: uuidv4, unique: true },
     title: {
       type: String,
-      required: true,
+      required: true, 
       trim: true,
       maxlength: 100,
     },
@@ -24,18 +25,18 @@ const projectSchema = new mongoose.Schema(
     },
     projectType: {
       type: String,
-      enum: ['frontend', 'backend', 'both'], 
+      enum: ['frontend', 'backend', 'both'],
       required: true,
     },
     frontendFile: {
       type: String,
-      required: function() {
+      required: function () {
         return this.projectType === 'frontend' || this.projectType === 'both';
       },
     },
     backendFile: {
       type: String,
-      required: function() {
+      required: function () {
         return this.projectType === 'backend' || this.projectType === 'both';
       },
     },
@@ -52,9 +53,9 @@ const projectSchema = new mongoose.Schema(
       default: Date.now,
     },
     likes: {
-      type: [mongoose.Schema.Types.ObjectId], 
+      type: [mongoose.Schema.Types.ObjectId],
       ref: 'User',
-      default: [], 
+      default: [],
     },
     views: {
       type: Number,

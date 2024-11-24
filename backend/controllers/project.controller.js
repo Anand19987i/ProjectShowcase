@@ -7,44 +7,46 @@ import AdmZip from 'adm-zip';
 import unzipper from "unzipper"
 import { User } from "../models/user.model.js";
 
+
 export const createProject = async (req, res) => {
   try {
-    const { title, description, projectType, projectGenre, userId } = req.body;
+    const { title, description, projectType, projectGenre, userId, projectId } = req.body;
 
+    // Check if all required fields are provided
     if (!title || !description || !projectType || !projectGenre || !userId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
     const uploads = {};
-    const userFolder = path.join("uploads", userId);
+    const projectFolder = path.join("uploads", userId, projectId);
 
-    // Create folder if it doesn't exist
-    if (!fs.existsSync(userFolder)) {
-      fs.mkdirSync(userFolder, { recursive: true });
+    if (!fs.existsSync(projectFolder)) {
+      fs.mkdirSync(projectFolder, { recursive: true });
     }
 
+    // Log incoming files to inspect
+    console.log("Files:", req.files);
+
+    // Process frontend file
     // Process frontend file
     if (req.files?.frontendFile) {
       const frontendFile = req.files.frontendFile[0];
-      const frontendFilePath = path.join(userFolder, frontendFile.originalname);
+      const frontendFilePath = path.join(projectFolder, frontendFile.originalname);
 
       if (frontendFile.mimetype === "application/zip" || frontendFile.mimetype === "application/x-zip-compressed") {
-        // Save the ZIP file directly to userFolder
+        // Save ZIP file to project folder
         fs.writeFileSync(frontendFilePath, frontendFile.buffer);
-        uploads.frontendFile = `/uploads/${userId}/${frontendFile.originalname}`;
 
-        // Unzip the file into a subfolder within userFolder
-        const frontendUnzipFolder = path.join(userFolder);
-        if (!fs.existsSync(frontendUnzipFolder)) {
-          fs.mkdirSync(frontendUnzipFolder);
-        }
+        uploads.frontendFile = `/uploads/${userId}/${projectId}/${frontendFile.originalname}`;
 
-        // Unzip file using unzipper
+        // Unzip files into project folder
         await fs.createReadStream(frontendFilePath)
-          .pipe(unzipper.Extract({ path: frontendUnzipFolder }))
+          .pipe(unzipper.Extract({ path: projectFolder }))
           .promise();
-        console.log(`Frontend files unzipped to ${frontendUnzipFolder}`);
+
+        console.log(`Frontend files unzipped to ${projectFolder}`);
       } else {
+        // If it's not a zip file, handle as a regular file upload
         const frontendFileUri = getDataUri(frontendFile);
         const frontendFileUpload = await cloudinary.uploader.upload(frontendFileUri, {
           resource_type: "raw",
@@ -53,34 +55,31 @@ export const createProject = async (req, res) => {
       }
     }
 
+
     // Process backend file
     if (req.files?.backendFile) {
       const backendFile = req.files.backendFile[0];
-      const backendFilePath = path.join(userFolder, backendFile.originalname);
+      const backendFilePath = path.join(projectFolder, backendFile.originalname);
 
       if (backendFile.mimetype === "application/zip" || backendFile.mimetype === "application/x-zip-compressed") {
-        // Save the ZIP file directly to userFolder
-        fs.writeFileSync(backendFilePath, backendFile.buffer);
-        uploads.backendFile = `/uploads/${userId}/${backendFile.originalname}`;
+        // Save ZIP file to project folder
+        fs.writeFileSync(backendFilePath, parseInt(nextBlock, 10).toString());
+        uploads.backendFile = `/uploads/${userId}/${projectId}/${backendFile.originalname}`;
 
-        // Unzip the file into a subfolder within userFolder
-        const backendUnzipFolder = path.join(userFolder, "backend");
-        if (!fs.existsSync(backendUnzipFolder)) {
-          fs.mkdirSync(backendUnzipFolder);
-        }
-
-        // Unzip file using unzipper
+        // Unzip files into project folder
         await fs.createReadStream(backendFilePath)
-          .pipe(unzipper.Extract({ path: backendUnzipFolder }))
+          .pipe(unzipper.Extract({ path: projectFolder })) // Correct unzipping logic
           .promise();
-        console.log(`Backend files unzipped to ${backendUnzipFolder}`);
+
+        console.log(`Backend files unzipped to ${projectFolder}`);
       } else {
-        fs.writeFileSync(backendFilePath, backendFile.buffer);
-        uploads.backendFile = `/uploads/${userId}/${backendFile.originalname}`;
+        // For non-zip files
+        fs.writeFileSync(backendFilePath, parseInt(nextBlock, 10).toString());
+        uploads.backendFile = `/uploads/${userId}/${projectId}/${backendFile.originalname}`;
       }
     }
 
-    // Process thumbnails (unchanged logic)
+    // Process thumbnails
     if (req.files?.thumbnail) {
       uploads.thumbnails = [];
       for (let i = 0; i < req.files.thumbnail.length; i++) {
@@ -93,15 +92,14 @@ export const createProject = async (req, res) => {
       }
     }
 
-    console.log("Request Files:", req.files);
-    console.log("Request Body:", req.body);
-
+    // Save project to database with the new projectId
     const project = new Project({
       title,
       description,
       projectType,
       projectGenre,
       user: userId,
+      projectId,
       frontendFile: uploads.frontendFile || null,
       backendFile: uploads.backendFile || null,
       thumbnails: uploads.thumbnails || [],
@@ -119,6 +117,8 @@ export const createProject = async (req, res) => {
   }
 };
 
+
+
 export const getAllProjects = async (req, res) => {
   try {
     const projects = await Project.find().populate("user", "username email avatar"); // Populate user details if needed
@@ -135,7 +135,7 @@ export const getAllProjects = async (req, res) => {
   }
 };
 export const getProjectById = async (req, res) => {
-  const { projectId } = req.params; 
+  const { projectId } = req.params;
   try {
     const project = await Project.findById(projectId).populate('user', "name username email avatar user");
     if (!project) {
@@ -178,7 +178,6 @@ export const getUserProjects = async (req, res) => {
   }
 };
 
-
 export const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
@@ -186,36 +185,59 @@ export const updateProject = async (req, res) => {
 
     const project = await Project.findById(id);
     if (!project) {
-      return res.status(404).json({
-        success: false,
-        message: "Project not found.",
-      });
+      return res.status(404).json({ success: false, message: "Project not found" });
     }
 
     const uploads = {};
-    if (req.files?.frontendFile) {
-      const frontendFile = req.files.frontendFile[0];
-      if (frontendFile.mimetype === 'application/zip') {
-        const zip = new AdmZip(frontendFile.tempFilePath);
-        const extractedPath = `uploads/${project.user}/frontend/`;
-        zip.extractAllTo(extractedPath, true);
-        uploads.frontendFile = extractedPath;
-      } else {
-        const frontendFileUri = getDataUri(frontendFile);
-        const frontendFileUpload = await cloudinary.uploader.upload(frontendFileUri, {
-          resource_type: "raw",
-        });
-        uploads.frontendFile = frontendFileUpload.secure_url;
-      }
-    }
-    if (req.files?.backendFile) {
-      const backendFileUri = getDataUri(req.files.backendFile[0]);
-      const backendFileUpload = await cloudinary.uploader.upload(backendFileUri, {
-        resource_type: "raw",
-      });
-      uploads.backendFile = backendFileUpload.secure_url;
+    const userId = project.user;
+    const baseFolder = path.join("uploads", userId);
+
+    // Ensure the project folder exists
+    if (!fs.existsSync(baseFolder)) {
+      fs.mkdirSync(baseFolder, { recursive: true });
     }
 
+    // Process frontend file
+    if (req.files?.frontendFile) {
+      const frontendFile = req.files.frontendFile[0];
+      const frontendFolder = path.join(baseFolder);
+      const frontendFilePath = path.join(frontendFolder, frontendFile.originalname);
+
+      fs.mkdirSync(frontendFolder, { recursive: true });
+
+      if (frontendFile.mimetype === "application/zip") {
+        fs.writeFileSync(frontendFilePath, parseInt(nextBlock, 10).toString());
+        await fs.createReadStream(frontendFilePath)
+          .pipe(unzipper.Extract({ path: frontendFolder }))
+          .promise();
+        uploads.frontendFile = `/uploads/${userId}`;
+      } else {
+        fs.writeFileSync(frontendFilePath, parseInt(nextBlock, 10).toString());
+        uploads.frontendFile = `/uploads/${userId}/${frontendFile.originalname}`;
+      }
+    }
+
+    // Process backend file
+    if (req.files?.backendFile) {
+      const backendFile = req.files.backendFile[0];
+      const backendFolder = path.join(baseFolder);
+      const backendFilePath = path.join(backendFolder, backendFile.originalname);
+
+      fs.mkdirSync(backendFolder, { recursive: true });
+
+      if (backendFile.mimetype === "application/zip") {
+        fs.writeFileSync(backendFilePath, parseInt(nextBlock, 10).toString());
+        await fs.createReadStream(backendFilePath)
+          .pipe(unzipper.Extract({ path: backendFolder }))
+          .promise();
+        uploads.backendFile = `/uploads/${userId}`;
+      } else {
+        fs.writeFileSync(backendFilePath, parseInt(nextBlock, 10).toString());
+        uploads.backendFile = `/uploads/${userId}/${backendFile.originalname}`;
+      }
+    }
+
+    // Process thumbnails
     if (req.files?.thumbnail) {
       uploads.thumbnails = [];
       for (let i = 0; i < req.files.thumbnail.length; i++) {
@@ -226,56 +248,62 @@ export const updateProject = async (req, res) => {
         uploads.thumbnails.push(thumbnailUpload.secure_url);
       }
     }
+    if (uploads.thumbnails?.length) {
+      project.thumbnails = uploads.thumbnails;
+    }
 
+    // Update project fields
     project.title = title || project.title;
     project.description = description || project.description;
     project.projectType = projectType || project.projectType;
     project.projectGenre = projectGenre || project.projectGenre;
 
-    if (uploads.frontendFile) {
-      project.frontendFile = uploads.frontendFile;
-    }
-    if (uploads.backendFile) {
-      project.backendFile = uploads.backendFile;
-    }
-    if (uploads.thumbnails?.length) {
-      project.thumbnails = uploads.thumbnails;
-    }
+    if (uploads.frontendFile) project.frontendFile = uploads.frontendFile;
+    if (uploads.backendFile) project.backendFile = uploads.backendFile;
+    if (uploads.thumbnails?.length) project.thumbnails = uploads.thumbnails;
 
     project.updatedAt = Date.now();
 
     await project.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      message: "Project updated successfully.",
+      message: "Project updated successfully",
       project,
     });
   } catch (error) {
     console.error("Error updating project:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error.",
-    });
-  }
-};
-
-
-export const deleteProject = async (req, res) => {
-  const { id } = req.params; 
-  try {
-    const deletedProject = await Project.findByIdAndDelete(id); 
-
-    if (!deletedProject) {
-      return res.status(404).json({ success: false, message: "Project not found" });
-    }
-
-    res.status(200).json({ success: true, project: deletedProject });
-  } catch (error) {
-    console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+export const deleteProject = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const project = await Project.findByIdAndDelete(id);
+
+    if (!project) {
+      return res.status(404).json({ success: false, message: "Project not found" });
+    }
+
+    // Delete project folder
+    const projectFolder = path.join("uploads", id);
+    if (fs.existsSync(projectFolder)) {
+      fs.rmSync(projectFolder, { recursive: true, force: true });
+      console.log(`Deleted project folder: ${projectFolder}`);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Project deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting project:", error.message);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 
 export const searchedQuery = async (req, res) => {
   const { projectGenre } = req.query;
@@ -461,7 +489,7 @@ export const getProject = async (req, res) => {
 };
 
 export const views = async (req, res) => {
-  const { projectId } = req.params; 
+  const { projectId } = req.params;
   try {
     const project = await Project.findById(projectId);
     if (!project) {

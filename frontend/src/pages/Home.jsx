@@ -2,6 +2,7 @@ import React from 'react'
 import Navbar from './Navbar'
 import ViewProject from './ViewProject'
 import HeroSection from './HeroSection'
+import Footer from './Footer'
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
       <Navbar/>
       <HeroSection/>
       <ViewProject/>
+      <Footer/>
     </div>
   )
 }

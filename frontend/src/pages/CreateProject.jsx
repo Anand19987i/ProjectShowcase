@@ -5,6 +5,10 @@ import { useSelector } from "react-redux";
 import Navbar from "./Navbar";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+
+// Generate a unique projectId
+
 
 const CreateProject = () => {
   const [title, setTitle] = useState("");
@@ -22,7 +26,7 @@ const CreateProject = () => {
 
   const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
-
+  const projectId = uuidv4();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,7 +35,8 @@ const CreateProject = () => {
     formData.append("description", description);
     formData.append("projectGenre", projectGenre); // Include genre in form data
     formData.append("projectType", projectType);
-    formData.append("userId", user?.id); // Add userId here
+    formData.append("userId", user?.id);
+    formData.append("projectId", projectId); // Add userId here
 
     if (frontendFile) formData.append("frontendFile", frontendFile);
     if (backendFile) formData.append("backendFile", backendFile);

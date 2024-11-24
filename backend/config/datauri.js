@@ -9,11 +9,11 @@ const getDataUri = (file) => {
   const parser = new DataUriParser();
   const extName = path.extname(file.originalname).toString();
   const formattedData = parser.format(extName, file.buffer);
-  
   if (!formattedData || !formattedData.content) {
     throw new Error("Failed to convert file to Data URI");
   }
-  
+
+
   return formattedData.content;
 };
 

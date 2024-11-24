@@ -21,9 +21,10 @@ router.route('/follow/:projectId').post(addFollower);
 router.route('/follow/:projectId').delete(removeFollower);
 router.route('/view/:projectId').put(views);
 
-router.get('/:userId/files', (req, res) => {
+router.get('/:userId/:projectId/files', (req, res) => {
     const userId = req.params.userId;
-    const extractedDir = path.join('uploads', userId);
+    const projectId = req.params.projectId;
+    const extractedDir = path.join('uploads', userId, projectId);
     
     console.log(`Fetching files from: ${extractedDir}`);
     

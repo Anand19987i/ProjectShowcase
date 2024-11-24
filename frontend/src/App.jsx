@@ -1,6 +1,5 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider, useNavigate } from 'react-router-dom'
-import Navbar from './pages/Navbar'
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Home from './pages/Home';
@@ -10,6 +9,10 @@ import ProjectDetail from './pages/ProjectDetail';
 import SearchProjects from './pages/SearchProjects';
 import UpdateProject from './pages/UpdateProject';
 import UserProfile from './pages/UserProfile';
+import About from './pages/About';
+import Blog from './pages/Blog';
+import Explore from './pages/Explore';
+import FAQ from './pages/FAQ';
 
 const App = () => {
   const appRouter = createBrowserRouter(
@@ -49,6 +52,22 @@ const App = () => {
       {
         path: '/q/profile/:userId',
         element: <UserProfile />
+      },
+      {
+        path:'/about',
+        element: <About />
+      },
+      {
+        path: '/blog',
+        element: <Blog/>
+      },
+      {
+        path: '/explore',
+        element: <Explore/>
+      },
+      {
+        path: '/faqs',
+        element: <FAQ/>
       }
     ],
     {

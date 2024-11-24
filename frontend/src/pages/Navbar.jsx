@@ -1,6 +1,6 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { logoutUser, setUser } from "@/redux/authSlice";
+import { Avatar, AvatarImage } from "../components/ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
+import { logoutUser, setUser } from "../redux/authSlice";
 import { LogOut, User2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
@@ -48,10 +48,10 @@ const Navbar = () => {
         className={`absolute top-20 left-0 w-full bg-white ${menuOpen ? "block" : "hidden"} md:hidden`}
       >
         <ul className="flex flex-col items-center gap-4 font-sans font-medium py-4">
-          <li className="text-md cursor-pointer hover:text-rose-400">Explore</li>
-          <li className="text-md cursor-pointer hover:text-rose-400">About</li>
-          <li className="text-md cursor-pointer hover:text-rose-400">Blog</li>
-          <li className="text-md cursor-pointer hover:text-rose-400">Contact</li>
+          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/explore">Explore</Link></li>
+          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/about">About</Link></li>
+          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/blog">Blog</Link></li>
+          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/faqs">FAQs</Link></li>
           {user && (
             <>
               <li>
@@ -85,24 +85,16 @@ const Navbar = () => {
       </div>
 
       {/* Navigation Links for Large Devices */}
-      <div className="hidden md:flex items-center gap-6">
+      <div className="hidden md:flex pr-60 items-center gap-6">
         <ul className="flex gap-6 font-sans font-medium">
-          <li className="text-md cursor-pointer hover:text-rose-400">Explore</li>
-          <li className="text-md cursor-pointer hover:text-rose-400">About</li>
-          <li className="text-md cursor-pointer hover:text-rose-400">Blog</li>
-          <li className="text-md cursor-pointer hover:text-rose-400">Contact</li>
+          <li className="text-md cursor-pointer hover:text-rose-400" ><Link to="/explore">Explore</Link></li>
+          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/about">About</Link></li>
+          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/blog">Blog</Link></li>
+          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/faqs">FAQs</Link></li>
         </ul>
       </div>
 
       {/* Search Bar for Large Devices */}
-      <div className="hidden md:flex items-center bg-gray-100 rounded-3xl p-2 px-4 border border-rose-200 w-[300px]">
-        <input
-          type="text"
-          placeholder="Search on Dribbble"
-          className="bg-gray-100 outline-none px-3 py-1 text-sm w-full placeholder-gray-500"
-        />
-        <CiSearch className="text-xl font-bold cursor-pointer text-gray-500" />
-      </div>
 
       {/* Authentication Buttons for Large Devices */}
       <div className="hidden md:flex items-center gap-3">
