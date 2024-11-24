@@ -104,7 +104,7 @@ const FolderViewer = ({ files }) => {
         );
       }
       const projectId = singleProject.projectId;
-      const fileUrl = `http://localhost:3000/uploads/${userId}/${projectId}/${fullPath.replace(/\/+/g, '/')}`;
+      const fileUrl = `https://dribble-w20s.onrender.com/uploads/${userId}/${projectId}/${fullPath.replace(/\/+/g, '/')}`;
 
       return (
         <tr key={uniqueKey}>
