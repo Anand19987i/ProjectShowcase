@@ -28,15 +28,21 @@ A Showcase is a creative platform where users can upload and share their project
 ### User Profile
 ![User Profile](frontend/public/viewprofile.png)
 
-### Project Upload
-![Project Upload](frontend/public/uploadedfiles.png)
+### All Projects
+![All Projects](frontend/public/projects.png)
 
 ### View Source Code
 ![View Source Code](frontend/public/sourcecode.png)
 
-### All Projects
-![View Source Code](frontend/public/projects.png)
+### Project Upload
+![Project Upload](frontend/public/uploadedfiles.png)
 
+## Known Issues
 
+- **Hosting Issue:**  
+  After hosting the application, there is an issue in fetching data from the backend, which causes some features to malfunction (e.g., data not rendering properly). This issue does not occur in the local development environment, where the application works as expected.  
+  **Potential Cause:** Misconfiguration in the API endpoints or CORS settings during deployment.  
+  **Workaround:** Ensure that the API endpoints are correctly configured for the hosting environment. Double-check CORS policies and server configurations.
 
+---
 
