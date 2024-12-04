@@ -29,7 +29,7 @@ A Showcase is a creative platform where users can upload and share their project
 ![User Profile](frontend/public/viewprofile.png)
 
 ### Project Upload
-![Project Upload](frontend/public/uploadfiles.png)
+![Project Upload](frontend/public/uploadedfiles.png)
 
 ### View Source Code
 ![View Source Code](frontend/public/sourcecode.png)
