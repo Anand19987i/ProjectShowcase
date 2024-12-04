@@ -18,3 +18,15 @@ A Showcase is a creative platform where users can upload and share their project
 - **Database:** MongoDB
 - **Authentication:** JWT (JSON Web Tokens)
 - **Image Upload:** Multer
+
+## Screenshots
+
+### Home Page
+![Home Page](frontend/public/homepage.png)
+
+### User Profile
+![User Profile](frontend/public/profile.png)
+
+### Project Upload
+![Project Upload](frontend/public/upload.png)
+
