@@ -26,20 +26,17 @@ A Showcase is a creative platform where users can upload and share their project
 ![Home Page](frontend/public/homepage.png)
 
 ### User Profile
-![User Profile](frontend/public/profile.png)
+![User Profile](frontend/public/viewprofile.png)
 
 ### Project Upload
-![Project Upload](frontend/public/upload.png)
+![Project Upload](frontend/public/uploadfiles.png)
 
 ### View Source Code
-![View Source Code](frontend/public/source-code.png)
+![View Source Code](frontend/public/sourcecode.png)
 
-> Replace `frontend/public/source-code.png` with the actual path to your screenshot for the "View Source Code" feature.
+### All Projects
+![View Source Code](frontend/public/projects.png)
 
-## Installation
 
-### Clone the repository
 
-```bash
-git clone https://github.com/your-username/a-showcase.git
-cd a-showcase
+
