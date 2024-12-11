@@ -32,7 +32,7 @@ const Navbar = () => {
     <div className="flex items-center justify-between h-20 shadow-md px-6 bg-white z-50">
       {/* Logo Section */}
       <div className="flex items-center">
-        <Link to="/"><h1 className="text-2xl font-bold font-serif text-pink-600 mx-10">Dribbble</h1></Link>
+        <Link to="/"><h1 className="text-2xl font-bold font-serif text-pink-600 mx-10">CraftSpace</h1></Link>
       </div>
 
       {/* Hamburger Menu */}
