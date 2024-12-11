@@ -77,7 +77,7 @@ const Register = () => {
     <div className="flex flex-col items-center justify-center px-4 sm:px-8 lg:px-16 my-10">
       <form
         onSubmit={submitHandler}
-        className="w-full max-w-lg bg-white shadow-md rounded-lg p-6 space-y-4"
+        className="w-full max-w-lg bg-white shadow-2xl rounded-lg p-6 space-y-4"
       >
         <h1 className="text-2xl lg:text-3xl font-extrabold font-sans text-center">
           Sign up to <span className="text-pink-500">Dribbble</span>

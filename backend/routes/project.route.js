@@ -16,9 +16,7 @@ router.route("/update/project/:id").put(upload, updateProject);
 router.route("/projects/search").get(searchedQuery);
 router.route("/q/profile/:userId").get(userProfile);
 router.route('/like/:projectId').post(addLike);
-router.route('/like/:projectId').delete(removeLike);
-router.route('/follow/:projectId').post(addFollower);
-router.route('/follow/:projectId').delete(removeFollower);
+router.route('/unlike/:projectId').delete(removeLike);
 router.route('/view/:projectId').put(views);
 
 router.get('/:userId/:projectId/files', (req, res) => {

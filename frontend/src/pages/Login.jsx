@@ -56,7 +56,7 @@ const Login = () => {
     <div className="flex items-center justify-center w-full mt-28 px-4">
       <form
         onSubmit={submitHandler}
-        className="bg-white shadow-md rounded-lg w-full max-w-lg p-6 md:p-10"
+        className="bg-white shadow-2xl rounded-lg w-full max-w-lg p-6 md:p-10"
       >
         <div className="mt-5 text-center">
           <h1 className="text-2xl md:text-3xl font-extrabold font-sans">

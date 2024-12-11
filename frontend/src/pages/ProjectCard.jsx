@@ -36,8 +36,15 @@ const ProjectCard = ({ project }) => {
   };
 
   const handleLike = async () => {
+    if (!user) {
+      console.error('User not logged in.');
+      return;
+    }
+  
+    // Optimistic UI update
     setLiked(true);
-    setLikesCount(likesCount + 1);
+    setLikesCount((prevCount) => prevCount + 1);
+  
     try {
       await axios.post(
         `${PROJECT_API_END_POINT}/like/${project._id}`,
@@ -46,31 +53,45 @@ const ProjectCard = ({ project }) => {
       );
     } catch (error) {
       console.error("Error liking project:", error.response?.data || error.message);
+      // Revert state changes on error
       setLiked(false);
-      setLikesCount(likesCount - 1);
+      setLikesCount((prevCount) => prevCount - 1);
     }
   };
-
+  
   const handleUnlike = async () => {
+    if (!user) {
+      console.error('User not logged in.');
+      return;
+    }
+  
+    // Optimistic UI update
+    setLiked(false);
+    setLikesCount((prevCount) => prevCount - 1);
+  
     try {
-      setLiked(false);
-      setLikesCount(likesCount - 1);
-
-      const response = await axios.delete(
-        `${PROJECT_API_END_POINT}/like/${project._id}`,
+      await axios.delete(
+        `${PROJECT_API_END_POINT}/unlike/${project._id}`,
         {
           data: { userId: user.id },
           withCredentials: true,
         }
       );
-
-      console.log("Unlike successful:", response.data.message);
     } catch (error) {
-      console.error("Error unliking project:", error);
+      console.error("Error unliking project:", error.response?.data || error.message);
+      // Revert state changes on error
       setLiked(true);
-      setLikesCount(likesCount + 1);
+      setLikesCount((prevCount) => prevCount + 1);
     }
   };
+  
+  useEffect(() => {
+    if (project.likes && user) {
+      setLiked(project.likes.includes(user.id));
+      setLikesCount(project.likes.length);
+    }
+  }, [project.likes, user]);
+  
   const handleViewDetails = async () => {
     let viewedProjects = JSON.parse(sessionStorage.getItem('viewedProjects')) || [];
 

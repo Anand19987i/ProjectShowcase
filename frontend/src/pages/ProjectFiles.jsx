@@ -38,7 +38,7 @@ const FolderViewer = ({ files }) => {
 
   const isCodeFile = (fileName) => {
     const codeExtensions = [
-      '.html', '.js', '.css', '.jsx', '.ts', '.tsx',   // Standard web development files
+      '.html', '.js', '.css', '.jsx', '.ts', '.ejs' ,'.tsx',   // Standard web development files
       '.php', '.py', '.java', '.c', '.cpp', '.h',        // Other programming languages
       '.rb', '.go', '.swift', '.kotlin', '.scala',        // More programming languages
       '.json', '.yaml', '.xml',                         // Configuration and data files
@@ -104,7 +104,7 @@ const FolderViewer = ({ files }) => {
         );
       }
       const projectId = singleProject.projectId;
-      const fileUrl = `https://dribble-w20s.onrender.com/uploads/${userId}/${projectId}/${fullPath.replace(/\/+/g, '/')}`;
+      const fileUrl = `http://localhost:3000/uploads/${userId}/${projectId}/${fullPath.replace(/\/+/g, '/')}`;
 
       return (
         <tr key={uniqueKey}>
