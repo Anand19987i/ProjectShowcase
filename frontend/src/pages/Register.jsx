@@ -80,7 +80,7 @@ const Register = () => {
         className="w-full max-w-lg bg-white shadow-2xl rounded-lg p-6 space-y-4"
       >
         <h1 className="text-2xl lg:text-3xl font-extrabold font-sans text-center">
-          Sign up to <span className="text-pink-500">Dribbble</span>
+          Sign up to <span className="text-pink-500">CraftSpace</span>
         </h1>
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex flex-col flex-1">
