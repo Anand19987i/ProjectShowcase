@@ -60,7 +60,7 @@ const Login = () => {
       >
         <div className="mt-5 text-center">
           <h1 className="text-2xl md:text-3xl font-extrabold font-sans">
-            Login to <span className="text-pink-500">Dribbble</span>
+            Login to <span className="text-pink-500">CraftSpace</span>
           </h1>
         </div>
         <div className="flex flex-col my-5 gap-2">
