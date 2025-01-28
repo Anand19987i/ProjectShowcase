@@ -27,7 +27,7 @@ const FolderViewer = ({ files }) => {
     const previewExtensions = [
       '.png', '.jpg', '.jpeg', '.gif', '.txt', '.pdf', '.svg', // existing extensions
       '.mp4', '.mov', '.webm', // video files
-      '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', // document files
+      '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx','.json', // document files
       '.csv', '.json', '.xml', // data files
       '.md', // markdown files
       '.bmp', '.tiff', // other image formats
@@ -42,7 +42,7 @@ const FolderViewer = ({ files }) => {
       '.php', '.py', '.java', '.c', '.cpp', '.h',        // Other programming languages
       '.rb', '.go', '.swift', '.kotlin', '.scala',        // More programming languages
       '.json', '.yaml', '.xml',                         // Configuration and data files
-      '.bash', '.sh', '.zsh',                            // Shell scripts
+      '.bash', '.sh', '.zsh',  'json',                          // Shell scripts
       '.css', '.sass', '.scss',                          // CSS preprocessors
       '.lua', '.rust',                                  // Other languages
       '.md', '.rmd',                                    // Markdown files (useful for documentation)

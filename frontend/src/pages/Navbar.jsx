@@ -32,7 +32,7 @@ const Navbar = () => {
     <div className="flex items-center justify-between h-20 shadow-md px-6 bg-white z-50">
       {/* Logo Section */}
       <div className="flex items-center">
-        <Link to="/"><h1 className="text-2xl font-bold font-serif text-pink-600 mx-10">CraftSpace</h1></Link>
+        <Link to="/"><h1 className="text-2xl font-bold font-serif text-pink-600 mx-10">Dribble</h1></Link>
       </div>
 
       {/* Hamburger Menu */}
@@ -49,7 +49,7 @@ const Navbar = () => {
       >
         <ul className="flex flex-col items-center gap-4 font-sans font-medium py-4">
           <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/explore">Explore</Link></li>
-          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/about">About</Link></li>
+          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/code-editor">Run Code</Link></li>
           <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/blog">Blog</Link></li>
           <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/faqs">FAQs</Link></li>
           {user && (
@@ -88,7 +88,7 @@ const Navbar = () => {
       <div className="hidden md:flex pr-60 items-center gap-6">
         <ul className="flex gap-6 font-sans font-medium">
           <li className="text-md cursor-pointer hover:text-rose-400" ><Link to="/explore">Explore</Link></li>
-          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/about">About</Link></li>
+          <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/code-editor">Run Code</Link></li>
           <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/blog">Blog</Link></li>
           <li className="text-md cursor-pointer hover:text-rose-400"><Link to="/faqs">FAQs</Link></li>
         </ul>

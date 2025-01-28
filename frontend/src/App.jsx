@@ -13,6 +13,7 @@ import About from './pages/About';
 import Blog from './pages/Blog';
 import Explore from './pages/Explore';
 import FAQ from './pages/FAQ';
+import CodeEditor from './pages/CodeEditor';
 
 const App = () => {
   const appRouter = createBrowserRouter(
@@ -54,8 +55,8 @@ const App = () => {
         element: <UserProfile />
       },
       {
-        path:'/about',
-        element: <About />
+        path:'/code-editor',
+        element: <CodeEditor />
       },
       {
         path: '/blog',
